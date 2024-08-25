@@ -1,6 +1,6 @@
-name: 'sales_analytics'
+name: 'Sales_Analytics'
 version: '1.0.0'
-profile: 'sales_analytics'
+profile: 'Sales-Analytics'
 
 
 
@@ -16,6 +16,6 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  sales_analytics:
+  Sales_Analytics:
     staging:
       +materialized: table

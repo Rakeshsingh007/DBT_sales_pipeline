@@ -1,0 +1,22 @@
+.
+├── README.md
+├── analyses
+├── data
+├── dbt_project.yml
+├── logs
+│   └── dbt.log
+├── macros
+├── models
+│   ├── liquor_sales_analysis.sql
+│   ├── schema.yml
+│   └── staging
+│       ├── schema.yml
+│       ├── stg_liquor_sales.sql
+│       └── stg_sales.sql
+├── requirements.txt
+├── seeds
+├── snapshots
+├── structure.txt
+└── tests
+
+10 directories, 10 files
