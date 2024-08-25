@@ -1,0 +1,214 @@
+version: 2
+
+sources:
+  - name: public
+    tables:
+      - name: raw_sales_data
+      - name: raw_liquor_sales_data
+
+
+models:
+  - name: stg_sales
+    description: "Staging table for sales data, including cleaned and validated sales information."
+    columns:
+      - name: id
+        description: "Primary key for the table, generated using row_number()."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: "Unique identifier for the order, derived from the 'Order ID' column."
+
+      - name: product
+        description: "The name of the product that was ordered."
+        data_tests:
+          - not_null
+
+      - name: quantity_ordered
+        description: "The quantity of the product ordered, validated to be a positive integer."
+        data_tests:
+          - not_null
+
+      - name: price_each
+        description: "The price per unit of the product, rounded to two decimal places."
+        data_tests:
+          - not_null
+
+      - name: order_date
+        description: "Timestamp of the order, converted to the 'America/New_York' timezone."
+        data_tests:
+          - not_null
+
+      - name: purchase_address
+        description: "The address where the purchase was made."
+        data_tests:
+          - not_null
+
+  - name: stg_liquor_sales
+    description: "Staging table for liquor sales data, including cleaned and validated liquor sales information."
+    columns:
+      - name: invoice_id
+        description: "Primary key for the table, generated from the 'Invoice/Item Number' column."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_date
+        description: "Timestamp of the liquor sale, converted to the 'America/New_York' timezone."
+        data_tests:
+          - not_null
+
+      - name: store_id
+        description: "Unique identifier for the store where the liquor was sold."
+        data_tests:
+          - not_null
+
+      - name: store_name
+        description: "The name of the store where the liquor was sold."
+        data_tests:
+          - not_null
+
+      - name: address
+        description: "The address of the store where the liquor was sold."
+        data_tests:
+          - not_null
+
+      - name: city
+        description: "The city where the store is located."
+        data_tests:
+          - not_null
+
+      - name: zip
+        description: "The zip code of the store location."
+        data_tests:
+          - not_null
+
+      - name: store_location
+        description: "Geographical location of the store."
+        data_tests:
+          - not_null
+
+      - name: category_id
+        description: "Unique identifier for the liquor category."
+        data_tests:
+          - not_null
+
+      - name: category_name
+        description: "The name of the liquor category."
+        data_tests:
+          - not_null
+
+      - name: vendor_id
+        description: "Unique identifier for the vendor."
+        data_tests:
+          - not_null
+
+      - name: vendor_name
+        description: "The name of the vendor."
+        data_tests:
+          - not_null
+
+      - name: item_id
+        description: "Unique identifier for the item."
+        data_tests:
+          - not_null
+
+      - name: item_name
+        description: "The name of the item."
+        data_tests:
+          - not_null
+
+      - name: pack
+        description: "The packaging type or quantity of the item."
+        data_tests:
+          - not_null
+
+      - name: volume
+        description: "Volume of the liquor bottle in milliliters."
+        data_tests:
+          - not_null
+
+      - name: bottle_cost
+        description: "Cost of the liquor bottle at the state level."
+        data_tests:
+          - not_null
+
+      - name: bottle_retail
+        description: "Retail price of the liquor bottle."
+        data_tests:
+          - not_null
+
+      - name: quantity
+        description: "Number of bottles sold."
+        data_tests:
+          - not_null
+
+      - name: amount
+        description: "Total sale amount in dollars."
+        data_tests:
+          - not_null
+
+      - name: sold_in_liters
+        description: "Volume of liquor sold in liters."
+        data_tests:
+          - not_null
+
+      - name: sold_in_gallons
+        description: "Volume of liquor sold in gallons."
+        data_tests:
+          - not_null
+
+data_tests:
+  - name: unique_primary_key_sales
+    model: stg_sales
+    data_tests:
+      - unique:
+          column_name: id
+
+  - name: unique_primary_key_liquor_sales
+    model: stg_liquor_sales
+    data_tests:
+      - unique:
+          column_name: invoice_id
+
+  - name: non_null_values_sales
+    model: stg_sales
+    data_tests:
+      - not_null:
+          columns:
+            - product
+            - quantity_ordered
+            - price_each
+            - order_date
+            - purchase_address
+
+  - name: non_null_values_liquor_sales
+    model: stg_liquor_sales
+    data_tests:
+      - not_null:
+          columns:
+            - invoice_id
+            - order_date
+            - store_id
+            - store_name
+            - address
+            - city
+            - zip
+            - store_location
+            - country_id
+            - country_name
+            - category_id
+            - category_name
+            - vendor_id
+            - vendor_name
+            - item_id
+            - item_name
+            - pack
+            - volume
+            - bottle_cost
+            - bottle_retail
+            - quantity
+            - amount
+            - sold_in_liters
+            - sold_in_gallons
