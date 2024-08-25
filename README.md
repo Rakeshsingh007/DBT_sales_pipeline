@@ -1,6 +1,3 @@
-
----
-
 # Liquor Sales Analysis Project
 
 ## Overview
@@ -9,15 +6,12 @@ This dbt project is designed to analyze liquor sales data through various transf
 
 ## Project Structure
 
-```
+```text
 .
 ├── LICENSE
 ├── README.md
 ├── analyses
-├── data
 ├── dbt_project.yml
-├── logs
-│   └── dbt.log
 ├── macros
 ├── models
 │   ├── liquor_sales_analysis.sql
@@ -27,7 +21,6 @@ This dbt project is designed to analyze liquor sales data through various transf
 │       ├── stg_liquor_sales.sql
 │       └── stg_sales.sql
 ├── requirements.txt
-├── structure.txt
 ├── seeds
 ├── snapshots
 └── tests
@@ -67,26 +60,17 @@ This dbt project is designed to analyze liquor sales data through various transf
 
    Ensure your `profiles.yml` is set up correctly for your data warehouse. Refer to the [dbt documentation](https://docs.getdbt.com/docs/configure-your-profile) for configuration instructions.
 
-
 ## Directory and File Descriptions
 
 - **`README.md`**: Provides an overview of the project, installation instructions, and usage guidelines.
 
-- **`analyses/`**: 
+- **`analyses/`**:
   - **Purpose**: Contains analysis files and queries related to the project’s data.
   - **Contents**: Analysis scripts and related documentation.
-
-- **`data/`**:
-  - **Purpose**: Stores data files used in the project.
-  - **Contents**: Raw or processed data files.
 
 - **`dbt_project.yml`**:
   - **Purpose**: Configuration file for dbt, defining project settings and directory paths.
   - **Contents**: Project configuration settings.
-
-- **`logs/`**:
-  - **Purpose**: Contains log files generated during dbt runs.
-  - **Contents**: `dbt.log` for tracking and debugging.
 
 - **`macros/`**:
   - **Purpose**: Holds custom dbt macros for reusable SQL logic.
@@ -106,10 +90,6 @@ This dbt project is designed to analyze liquor sales data through various transf
   - **Purpose**: Lists Python dependencies required for the project.
   - **Contents**: Python package requirements.
 
-- **`schema.txt`**:
-  - **Purpose**: Documentation or configuration related to schema definitions.
-  - **Contents**: Details on schema structure.
-
 - **`seeds/`**:
   - **Purpose**: Contains seed data files to be loaded into the data warehouse.
   - **Contents**: CSV files or other data formats for seeding the database.
@@ -124,7 +104,8 @@ This dbt project is designed to analyze liquor sales data through various transf
 
 ## Usage Instructions
 
-1. **Install Dependencies**: 
+1. **Install Dependencies**:
+
    ```bash
    pip install -r requirements.txt
    ```
