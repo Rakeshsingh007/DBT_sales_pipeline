@@ -29,6 +29,7 @@ This dbt project is designed to analyze liquor sales data through various transf
 ├── structure.txt
 ├── seeds
 ├── snapshots
+├── LICENSE
 └── tests
 ```
 
