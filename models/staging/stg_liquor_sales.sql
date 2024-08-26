@@ -1,60 +1,63 @@
-with raw_data as (
-    select
-        -- Assigning meaningful names and suitable data types
-        "Invoice/Item Number" as invoice_id,
-        
-        -- Validating and converting the order date
-        CASE
-            WHEN "Date" ~ '^\d{2}/\d{2}/\d{2}' THEN 
-                to_timestamp("Date", 'MM/DD/YYYY') AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York'
-            ELSE NULL
-        END as order_date,
+with
+    raw_data as (
+        select
+            -- Assigning meaningful names and suitable data types
+            "Invoice/Item Number" as invoice_id,
 
-        -- Store-related information
-        "Store Number"::integer as store_id,
-        "Store Name" as store_name,
-        "Address" as address,
-        "City" as city,
-        "Zip Code"::varchar(10) as zip,  -- Assuming ZIP codes are strings, not integers
-        "Store Location" as store_location,
+            -- Validating and converting the order date
+            case
+                when "Date" ~ '^\d{2}/\d{2}/\d{2}'
+                then
+                    to_timestamp(
+                        "Date", 'MM/DD/YYYY'
+                    ) at time zone 'UTC' at time zone 'America/New_York'
+                else null
+            end as order_date,
 
-        -- County information
-        "County Number"::integer as county_id,  -- Correcting "country_id" to "county_id"
-        "County" as county_name,  -- Correcting "country_name" to "county_name"
+            -- Store-related information
+            "Store Number"::integer as store_id,
+            "Store Name" as store_name,
+            "Address" as address,
+            "City" as city,
+            "Zip Code"::varchar(10) as zip,  -- Assuming ZIP codes are strings, not integers
+            "Store Location" as store_location,
 
-        -- Category information
-        "Category"::integer as category_id,
-        "Category Name" as category_name,
+            -- County information
+            "County Number"::integer as county_id,  -- Correcting "country_id" to "county_id"
+            "County" as county_name,  -- Correcting "country_name" to "county_name"
 
-        -- Vendor information
-        "Vendor Number"::integer as vendor_id,
-        "Vendor Name" as vendor_name,
+            -- Category information
+            "Category"::integer as category_id,
+            "Category Name" as category_name,
 
-        -- Item-related information
-        "Item Number"::integer as item_id,
-        "Item Description" as item_name,
-        "Pack"::integer as pack,
-        "Bottle Volume (ml)"::integer as volume,  -- Assuming volume is an integer
+            -- Vendor information
+            "Vendor Number"::integer as vendor_id,
+            "Vendor Name" as vendor_name,
 
-        -- Pricing information
-        "State Bottle Cost"::numeric(10, 2) as bottle_cost,  -- Numeric with 2 decimal places for currency
-        "State Bottle Retail"::numeric(10, 2) as bottle_retail,  -- Same as above
+            -- Item-related information
+            "Item Number"::integer as item_id,
+            "Item Description" as item_name,
+            "Pack"::integer as pack,
+            "Bottle Volume (ml)"::integer as volume,  -- Assuming volume is an integer
 
-        -- Sales-related information
-        "Bottles Sold"::integer as quantity,
-        "Sale (Dollars)"::numeric(10, 2) as amount,
-        "Volume Sold (Liters)"::numeric(10, 3) as sold_in_liters,  -- Numeric with 3 decimal places
-        "Volume Sold (Gallons)"::numeric(10, 3) as sold_in_gallons  -- Same as above
-    from 
-        {{ source('public', 'raw_liquor_sales_data') }}
-)
+            -- Pricing information
+            "State Bottle Cost"::numeric(10, 2) as bottle_cost,  -- Numeric with 2 decimal places for currency
+            "State Bottle Retail"::numeric(10, 2) as bottle_retail,  -- Same as above
+
+            -- Sales-related information
+            "Bottles Sold"::integer as quantity,
+            "Sale (Dollars)"::numeric(10, 2) as amount,
+            "Volume Sold (Liters)"::numeric(10, 3) as sold_in_liters,  -- Numeric with 3 decimal places
+            "Volume Sold (Gallons)"::numeric(10, 3) as sold_in_gallons  -- Same as above
+        from {{ source("public", "raw_liquor_sales_data") }}
+    )
 
 select
     invoice_id,
     order_date,
-    EXTRACT(YEAR FROM order_date) AS order_year,
-    EXTRACT(MONTH FROM order_date) AS order_month,
-    EXTRACT(DAY FROM order_date) AS order_day,
+    extract(year from order_date) as order_year,
+    extract(month from order_date) as order_month,
+    extract(day from order_date) as order_day,
     store_id,
     store_name,
     address,
@@ -78,12 +81,14 @@ select
     sold_in_liters,
     sold_in_gallons
 from raw_data
-order by order_date
+order by
+    order_date
 
--- Add primary key constraint as a post-hook
-{{ config(
-    post_hook=[
-        """
+    -- Add primary key constraint as a post-hook
+    {{
+        config(
+            post_hook=[
+                """
         DO $$
         BEGIN
             IF NOT EXISTS (
@@ -96,5 +101,6 @@ order by order_date
             END IF;
         END $$;
         """
-    ]
-) }}
+            ]
+        )
+    }}

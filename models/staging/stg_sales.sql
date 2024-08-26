@@ -1,35 +1,39 @@
-with raw_data as (
-    select
-        CASE
-            WHEN "Order ID" ~ '^[0-9]+$' THEN "Order ID"::integer
-            ELSE NULL
-        END as order_id,
-        "Product" as product,
-        
-        -- Validate and cast Quantity Ordered
-        CASE
-            WHEN "Quantity Ordered" ~ '^[0-9]+$' THEN "Quantity Ordered"::integer
-            ELSE NULL
-        END as quantity_ordered,
+with
+    raw_data as (
+        select
+            case
+                when "Order ID" ~ '^[0-9]+$' then "Order ID"::integer else null
+            end as order_id,
+            "Product" as product,
 
-        -- Validate and round Price Each to 2 decimal places
-        CASE
-            WHEN "Price Each" ~ '^[0-9]+(\.[0-9]+)?$' THEN ROUND("Price Each"::numeric, 2)
-            ELSE NULL
-        END as price_each,
+            -- Validate and cast Quantity Ordered
+            case
+                when "Quantity Ordered" ~ '^[0-9]+$'
+                then "Quantity Ordered"::integer
+                else null
+            end as quantity_ordered,
 
-        -- Validate and parse Order Date with specific format
-        CASE
-            WHEN "Order Date" ~ '^\d{2}/\d{2}/\d{2} \d{2}:\d{2}$' THEN 
-                to_timestamp("Order Date", 'MM/DD/YY HH24:MI') AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York'
-            ELSE NULL
-        END as order_date,
+            -- Validate and round Price Each to 2 decimal places
+            case
+                when "Price Each" ~ '^[0-9]+(\.[0-9]+)?$'
+                then round("Price Each"::numeric, 2)
+                else null
+            end as price_each,
 
-        -- Keep Purchase Address as is
-        "Purchase Address" as purchase_address
-    from 
-        {{ source('public', 'raw_sales_data') }}
-)
+            -- Validate and parse Order Date with specific format
+            case
+                when "Order Date" ~ '^\d{2}/\d{2}/\d{2} \d{2}:\d{2}$'
+                then
+                    to_timestamp(
+                        "Order Date", 'MM/DD/YY HH24:MI'
+                    ) at time zone 'UTC' at time zone 'America/New_York'
+                else null
+            end as order_date,
+
+            -- Keep Purchase Address as is
+            "Purchase Address" as purchase_address
+        from {{ source("public", "raw_sales_data") }}
+    )
 
 select
     row_number() over () as id,
@@ -41,12 +45,14 @@ select
     purchase_address
 from raw_data
 where order_id is not null
-order by order_date
+order by
+    order_date
 
--- Add primary key constraint as a post-hook
-{{ config(
-    post_hook=[
-        """
+    -- Add primary key constraint as a post-hook
+    {{
+        config(
+            post_hook=[
+                """
         DO $$
         BEGIN
             IF NOT EXISTS (
@@ -59,5 +65,6 @@ order by order_date
             END IF;
         END $$;
         """
-    ]
-) }}
+            ]
+        )
+    }}

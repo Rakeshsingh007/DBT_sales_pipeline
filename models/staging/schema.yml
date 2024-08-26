@@ -6,7 +6,6 @@ sources:
       - name: raw_sales_data
       - name: raw_liquor_sales_data
 
-
 models:
   - name: stg_sales
     description: "Staging table for sales data, including cleaned and validated sales information."
