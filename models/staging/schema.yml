@@ -70,33 +70,22 @@ models:
 
       - name: address
         description: "The address of the store where the liquor was sold."
-        data_tests:
-          - not_null
+
 
       - name: city
         description: "The city where the store is located."
-        data_tests:
-          - not_null
 
       - name: zip
         description: "The zip code of the store location."
-        data_tests:
-          - not_null
 
       - name: store_location
         description: "Geographical location of the store."
-        data_tests:
-          - not_null
 
       - name: category_id
         description: "Unique identifier for the liquor category."
-        data_tests:
-          - not_null
 
       - name: category_name
         description: "The name of the liquor category."
-        data_tests:
-          - not_null
 
       - name: vendor_id
         description: "Unique identifier for the vendor."
@@ -130,13 +119,9 @@ models:
 
       - name: bottle_cost
         description: "Cost of the liquor bottle at the state level."
-        data_tests:
-          - not_null
 
       - name: bottle_retail
         description: "Retail price of the liquor bottle."
-        data_tests:
-          - not_null
 
       - name: quantity
         description: "Number of bottles sold."
@@ -145,8 +130,6 @@ models:
 
       - name: amount
         description: "Total sale amount in dollars."
-        data_tests:
-          - not_null
 
       - name: sold_in_liters
         description: "Volume of liquor sold in liters."

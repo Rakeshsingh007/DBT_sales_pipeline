@@ -1,8 +1,6 @@
-name: 'Sales_Analytics'
-version: '1.0.0'
-profile: 'Sales-Analytics'
-
-
+name: "Sales_Analytics"
+version: "1.0.0"
+profile: "Sales-Analytics"
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
