@@ -1,159 +1,197 @@
 version: 2
-
 sources:
   - name: public
     tables:
       - name: raw_sales_data
       - name: raw_liquor_sales_data
-
 models:
   - name: stg_sales
-    description: "Staging table for sales data, including cleaned and validated sales information."
+    description: Staging table for sales data, including cleaned and validated sales
+      information.
     columns:
       - name: id
-        description: "Primary key for the table, generated using row_number()."
+        description: Primary key for the table, generated using row_number().
         data_tests:
           - unique
           - not_null
-
       - name: order_id
-        description: "Unique identifier for the order, derived from the 'Order ID' column."
-
+        description: Unique identifier for the order, derived from the 'Order ID' column.
       - name: product
-        description: "The name of the product that was ordered."
+        description: The name of the product that was ordered.
         data_tests:
           - not_null
-
       - name: quantity_ordered
-        description: "The quantity of the product ordered, validated to be a positive integer."
+        description: The quantity of the product ordered, validated to be a positive
+          integer.
         data_tests:
           - not_null
-
       - name: price_each
-        description: "The price per unit of the product, rounded to two decimal places."
+        description: The price per unit of the product, rounded to two decimal places.
         data_tests:
           - not_null
-
       - name: order_date
-        description: "Timestamp of the order, converted to the 'America/New_York' timezone."
+        description: Timestamp of the order, converted to the 'America/New_York' timezone.
         data_tests:
           - not_null
-
       - name: purchase_address
-        description: "The address where the purchase was made."
+        description: The address where the purchase was made.
         data_tests:
           - not_null
-
   - name: stg_liquor_sales
-    description: "Staging table for liquor sales data, including cleaned and validated liquor sales information."
+    description: Staging table for liquor sales data, including cleaned and
+      validated liquor sales information.
     columns:
       - name: invoice_id
-        description: "Primary key for the table, generated from the 'Invoice/Item Number' column."
+        description: The unique identifier for each invoice. This is a string value that
+          is derived from the 'Invoice/Item Number' field in the raw data.
+        data_type: text
         data_tests:
+          - not_null
           - unique
-          - not_null
-
       - name: order_date
-        description: "Timestamp of the liquor sale, converted to the 'America/New_York' timezone."
+        description: The date when the order was placed. This is a timestamp value that
+          is derived from the 'Date' field in the raw data. The date is
+          converted to the 'America/New_York' timezone.
+        data_type: timestamp with time zone
         data_tests:
           - not_null
-
+      - name: order_year
+        description: The year when the order was placed. This is an integer value that
+          is extracted from the 'order_date' field.
+        data_type: numeric
+      - name: order_month
+        description: The month in which the order was placed. Extracted from the
+          'order_date' column.
+        data_type: numeric
+      - name: order_day
+        description: The day of the month on which the order was placed. Extracted from
+          the 'order_date' column.
+        data_type: numeric
       - name: store_id
-        description: "Unique identifier for the store where the liquor was sold."
+        description: The unique identifier for the store where the order was placed.
+        data_type: integer
         data_tests:
           - not_null
-
       - name: store_name
-        description: "The name of the store where the liquor was sold."
+        description: The name of the store where the liquor sale took place.
+        data_type: text
         data_tests:
           - not_null
-
       - name: address
-        description: "The address of the store where the liquor was sold."
-
-
+        description: The physical address of the store where the liquor sale took place.
+        data_type: text
       - name: city
-        description: "The city where the store is located."
-
+        description: The city where the store is located.
+        data_type: text
       - name: zip
-        description: "The zip code of the store location."
-
+        description: The zip code of the store where the liquor sale was made. It is a
+          string of 5 to 10 characters, depending on whether it includes the
+          4-digit extension.
+        data_type: character varying
       - name: store_location
-        description: "Geographical location of the store."
-
+        description: The physical location of the store where the liquor sale was made.
+          This could be a specific address or a general area within a city.
+        data_type: text
+      - name: county_id
+        description: The unique identifier for the county where the store is located.
+          This is an integer value.
+        data_type: integer
+      - name: county_name
+        description: The 'county_name' column represents the name of the county where
+          the store is located. It is derived from the 'County' column in the
+          raw_liquor_sales_data table.
+        data_type: text
       - name: category_id
-        description: "Unique identifier for the liquor category."
-
+        description: The 'category_id' column represents the unique identifier for the
+          category of the liquor product. It is derived from the 'Category'
+          column in the raw_liquor_sales_data table.
+        data_type: integer
       - name: category_name
-        description: "The name of the liquor category."
-
+        description: The 'category_name' column represents the name of the category of
+          the liquor product. It is derived from the 'Category Name' column in
+          the raw_liquor_sales_data table.
+        data_type: text
       - name: vendor_id
-        description: "Unique identifier for the vendor."
+        description: The unique identifier for the vendor. This is an integer value that
+          is used to uniquely identify each vendor in the database.
+        data_type: integer
         data_tests:
           - not_null
-
       - name: vendor_name
-        description: "The name of the vendor."
+        description: The name of the vendor. This is a string value that represents the
+          name of the vendor who supplied the item.
+        data_type: text
         data_tests:
           - not_null
-
       - name: item_id
-        description: "Unique identifier for the item."
+        description: The unique identifier for the item. This is an integer value that
+          is used to uniquely identify each item in the database.
+        data_type: integer
         data_tests:
           - not_null
-
       - name: item_name
-        description: "The name of the item."
+        description: The name of the liquor product sold.
+        data_type: text
         data_tests:
           - not_null
-
       - name: pack
-        description: "The packaging type or quantity of the item."
+        description: The number of bottles in a case for the liquor product.
+        data_type: integer
         data_tests:
           - not_null
-
       - name: volume
-        description: "Volume of the liquor bottle in milliliters."
+        description: The volume of each bottle of the liquor product sold, measured in
+          milliliters.
+        data_type: integer
         data_tests:
           - not_null
-
       - name: bottle_cost
-        description: "Cost of the liquor bottle at the state level."
-
+        description: The cost of a single bottle of liquor as provided by the vendor.
+          This is the price that the store pays to purchase the bottle from the
+          vendor. The value is represented as a decimal number with up to 2
+          decimal places.
+        data_type: numeric
       - name: bottle_retail
-        description: "Retail price of the liquor bottle."
-
+        description: The retail price of a single bottle of liquor. This is the price at
+          which the store sells the bottle to the customers. The value is
+          represented as a decimal number with up to 2 decimal places.
+        data_type: numeric
       - name: quantity
-        description: "Number of bottles sold."
+        description: The number of bottles sold in a single transaction. This is
+          represented as an integer.
+        data_type: integer
         data_tests:
           - not_null
-
       - name: amount
-        description: "Total sale amount in dollars."
-
+        description: The total sales amount for the liquor sold. This is calculated as
+          the product of the quantity of bottles sold and the retail price per
+          bottle.
+        data_type: numeric
       - name: sold_in_liters
-        description: "Volume of liquor sold in liters."
+        description: The total volume of liquor sold, measured in liters. This is
+          calculated as the product of the quantity of bottles sold and the
+          volume of each bottle.
+        data_type: numeric
         data_tests:
           - not_null
-
       - name: sold_in_gallons
-        description: "Volume of liquor sold in gallons."
+        description: The total volume of liquor sold, measured in gallons. This is
+          calculated as the product of the quantity of bottles sold and the
+          volume of each bottle, converted from liters to gallons.
+        data_type: numeric
         data_tests:
           - not_null
-
 data_tests:
   - name: unique_primary_key_sales
     model: stg_sales
     data_tests:
       - unique:
           column_name: id
-
   - name: unique_primary_key_liquor_sales
     model: stg_liquor_sales
     data_tests:
       - unique:
           column_name: invoice_id
-
   - name: non_null_values_sales
     model: stg_sales
     data_tests:
@@ -164,7 +202,6 @@ data_tests:
             - price_each
             - order_date
             - purchase_address
-
   - name: non_null_values_liquor_sales
     model: stg_liquor_sales
     data_tests:
